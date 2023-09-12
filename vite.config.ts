@@ -16,11 +16,11 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
+      '/arknightsGachaHelper': {
         target: "https://ak.hypergryph.com/user/api/inquiry/gacha", //跨域地址
         changeOrigin: true, //支持跨域
 
-        rewrite: (path) => path.replace(/^\/api/, "")//重写路径,替换/api
+        rewrite: (path) => path.replace(/^\/arknightsGachaHelper/, "")//重写路径,替换/api
       },
       '/vueapi/gacha':{
         
