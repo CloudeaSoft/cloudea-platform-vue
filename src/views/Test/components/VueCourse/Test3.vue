@@ -28,7 +28,7 @@ export default {
             //初始化时自动调用
             immediate: true,
             handler(newValue, oldValue) {
-                console.log('xxx', newValue, oldValue);
+                // console.log('xxx', newValue, oldValue);
             }
         },
         // 简写形式（当watch属性中只存在handler函数）

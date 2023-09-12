@@ -7,6 +7,7 @@ export default {
     data() {
         return {
             varr: [],
+            forArr: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         }
     },
     methods: {
@@ -27,6 +28,11 @@ export default {
         },
         d() {
             this.varr.splice(4, 1, [null])
+        },
+        forDemo() {
+            for (let i = this.forArr.length - 1; i >= 0; i--) {
+                console.log(this.forArr[i]);
+            }
         }
     }
 }
@@ -43,6 +49,8 @@ export default {
         <button @click="b">b</button>
         <button @click="c">c</button>
         <button @click="d">d</button>
+
+        <button @click="forDemo">for</button>
     </TestCard>
 </template>
 

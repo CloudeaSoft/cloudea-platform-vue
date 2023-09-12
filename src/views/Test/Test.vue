@@ -14,6 +14,8 @@ import Test8 from './components/VueCourse/Test8.vue'
 import Test9 from './components/VueCourse/Test9.vue'
 import Test10 from './components/VueCourse/Test10.vue'
 import Test11 from './components/VueCourse/Test11.vue'
+import Test12 from './components/VueCourse/Test12.vue'
+import Test13 from './components/VueCourse/Test13.vue'
 
 //个人测试
 import ArknightsGacha from './components/MyTest/ArknightsGacha.vue'
@@ -29,6 +31,8 @@ import None from './components/MyTest/None.vue'
         <TestCard>
             <template #header>VueCourse</template>
             <div>
+                <Test13></Test13>
+                <Test12></Test12>
                 <Test11></Test11>
                 <Test10></Test10>
                 <Test9></Test9>

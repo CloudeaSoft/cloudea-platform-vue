@@ -12,9 +12,12 @@ export default {
     directives: {
         // 调用时机：1.与元素成功绑定时。2.指令所在模板被重新解析时
         big(element, binding) {
-            console.log(element, binding.value);
+            // console.log(element, binding.value);
             element.innerText = binding.value * 10
         },
+        fbind(element,binding){
+            element.value = binding.value * 15
+        }
     }
 }
 </script>
