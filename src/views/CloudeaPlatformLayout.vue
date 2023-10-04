@@ -16,6 +16,9 @@ export default {
 
 <template>
     <CloudeaIndex>
-        <Test v-if="showKey === 0"></Test>
+        <router-link to="/test">test</router-link>
+        <br>
+        <router-link to="/tool">tool</router-link>
+        <RouterView></RouterView>
     </CloudeaIndex>
 </template>

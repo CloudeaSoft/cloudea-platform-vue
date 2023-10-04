@@ -15,6 +15,14 @@ a,
   transition: 0.4s;
 }
 
+ul {
+  list-style: none;
+}
+
+li {
+  list-style: none;
+}
+
 @media (hover: hover) {
   a:hover {
     /* background-color: hsla(160, 100%, 37%, 0.2); */

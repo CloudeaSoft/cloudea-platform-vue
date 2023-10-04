@@ -1,4 +1,6 @@
 <script>
+import axios from 'axios'
+import request from '@/utils/http.ts'
 import TestCard from '../TestCard.vue'
 export default {
     components: {
@@ -33,7 +35,17 @@ export default {
             for (let i = this.forArr.length - 1; i >= 0; i--) {
                 console.log(this.forArr[i]);
             }
+        },
+        override() {
+            request({
+                method: 'post',
+                url: "/api/Test/TestPut",
+                headers: {
+                    "X-HTTP-Method-Override": "PUT"
+                },
+            })
         }
+
     }
 }
 </script>
@@ -51,6 +63,8 @@ export default {
         <button @click="d">d</button>
 
         <button @click="forDemo">for</button>
+
+        <button @click="override">override</button>
     </TestCard>
 </template>
 
