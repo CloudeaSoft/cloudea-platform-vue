@@ -1,0 +1,9 @@
+:root {
+  --doc-height: 100vh;
+  --header-height: 3.6rem;
+
+  --tool-menu-width: 64px;
+
+  --z-index-navbar: 10;
+  --z-index-sidebar: 6;
+}

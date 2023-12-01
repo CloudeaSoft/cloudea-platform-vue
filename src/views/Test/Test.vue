@@ -63,12 +63,11 @@ import None from './components/MyTest/None.vue'
 
 <style scoped>
 .frame {
-    margin: 50px auto;
+    margin: 0px auto;
     padding: 15px;
-    width: 1080px;
-    /* max-height: 800px; */
+    max-width: 1080px;
+    width: 100%;
     border: 1px solid #999;
-    /* overflow-y: scroll; */
 }
 
 .header {

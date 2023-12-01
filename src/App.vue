@@ -1,92 +1,131 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import ReApp from './views/ReApp.vue'
-import CloudeaPlatformLayout from './views/CloudeaPlatformLayout.vue'
+  import { ref } from 'vue'
+  import { RouterView } from 'vue-router'
+  import { getImageUrl } from './utils/getAssetFile'
+
+  const loading = ref(true)
+
+  window.addEventListener(
+    'load',
+    (e) => {
+      console.log('页面加载完成: ', e)
+      setTimeout(() => {
+        loading.value = false
+      }, 1000)
+    },
+    { once:true }
+  )
 </script>
 
 <template>
-  <!-- <div>
-    <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-      <div class="wrapper">
-        <HelloWorld msg="You did it!" />
-
-        <nav>
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
-        </nav>
-
+  <Transition :name="'loading'">
+    <div id="loader-bg" v-show="loading">
+      <p id="loading" class="font01">
+        <span class="spac"
+          >その歌声は<span style="display: inline-block; margin-right: -0.3em">、</span
+          >春風と共に</span
+        >──
+      </p>
+      <div class="loading-bg">
+        <img class="sakura-1" :src="getImageUrl('loading-bg.gif')" alt="" width="240" />
       </div>
+    </div>
+  </Transition>
 
-    </header>
-
-    <RouterView />
-  </div> -->
-  <CloudeaPlatformLayout></CloudeaPlatformLayout>
+  <router-view></router-view>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  .loading-enter-active,
+  .loading-leave-active {
+    transition: opacity 1s ease;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .loading-enter-from,
+  .loading-leave-to {
+    opacity: 0;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  #loader-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: #fff;
+    z-index: 99999;
+  }
+  #loading {
+    height: 100vh;
+  }
+  #loading,
+  .loading-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
   }
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  #loading {
+    right: 0%;
+    left: 1%;
+    text-align: center;
+    font-size: 2.6rem;
+    color: #fc4792;
+    -webkit-writing-mode: vertical-rl;
+    writing-mode: vertical-rl;
+    display: inline;
+    transition: all 0.1s ease;
   }
-}
+
+  .loading-bg {
+    width: 100%;
+    height: 100%;
+    max-width: 240px;
+    max-height: 240px;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .sakura-1 {
+    -moz-animation: saku1 5s linear infinite;
+    animation: saku1 5s linear infinite;
+  }
+
+  .font01 {
+    font-family: 'Rounded Mplus 1c', sans-serif;
+  }
+
+  @keyframes saku1 {
+    0% {
+      transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @-moz-keyframes saku1 {
+    0% {
+      transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes saku1 {
+    0% {
+      transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+    }
+  }
 </style>

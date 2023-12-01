@@ -74,26 +74,19 @@
         this.loadingCheck = false
       },
       // 请求数据 - 获取寻访记录
-      async getGacha(val = 1) {
-        //获取一页记录
-        var res = await request.get('/api/GameHelper/Hypergryph/ArkNights/GetGachaPage', {
+      async getGacha() {
+        //获取记录
+        var res = await request.get('/api/GameHelper/ArkNights/GetGacha', {
           params: {
-            page: val,
             token: this.gachaToken,
             channelId: this.gachaChannelId
           }
         })
         try {
-          //加入记录列表
-          this.tableData = this.tableData.concat(res.data.list)
-          //递归条件：当前页数小于总页数，且返回结果长度不为0
-          if (
-            res.data.pagination.current < res.data.pagination.total &&
-            res.data.list.length != 0
-          ) {
-            await this.getGacha(val + 1)
-          }
+          // 加入记录列表
+          this.tableData = res.list;
         } catch (e) {
+          // 提示
           ElMessage({
             message: 'token无效',
             type: 'warning'

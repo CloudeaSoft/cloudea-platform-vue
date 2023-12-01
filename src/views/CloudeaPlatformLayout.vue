@@ -1,24 +1,29 @@
-<script>
-import Test from './Test/Test.vue'
-import CloudeaIndex from './CloudeaPlatform/CloudeaIndex.vue'
-export default {
-    components: {
-        Test,
-        CloudeaIndex,
-    },
-    data() {
-        return {
-            showKey: 0,
-        }
-    },
-}
+<script setup lang="ts">
+  import { ref } from 'vue'
+  // import CloudeaCursor from './CloudeaPlatform/components/CloudeaCursor.vue';
+  const windowHeight = ref()
+
+  const documentHeight = () => {
+    const doc = document.documentElement
+    doc.style.setProperty('--doc-height', `${window.innerHeight}`)
+    windowHeight.value = window.innerHeight
+  }
+
+  window.addEventListener('resize', documentHeight)
+  documentHeight()
 </script>
 
 <template>
-    <CloudeaIndex>
-        <router-link to="/test">test</router-link>
-        <br>
-        <router-link to="/tool">tool</router-link>
-        <RouterView></RouterView>
-    </CloudeaIndex>
+  <div class="cloudea-main" :height="windowHeight">
+    <router-view></router-view>
+    <!-- <CloudeaCursor></CloudeaCursor> -->
+  </div>
 </template>
+
+<style scoped>
+  .cloudea-main {
+    height: 100vh;
+    height: var(--doc-height);
+    overflow: overlay;
+  }
+</style>

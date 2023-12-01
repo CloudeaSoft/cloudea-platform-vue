@@ -1,30 +1,43 @@
-import { createRouter, createWebHistory, type Router, type RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import Tool from '@/views/Test/components/MyTest/ArknightsGacha.vue'
-import Test from '@/views/Test/Test.vue'
+import {
+  createRouter,
+  createWebHistory,
+  createWebHashHistory,
+  type Router,
+  type RouteRecordRaw
+} from 'vue-router'
+
+/**
+ * 加载路由
+ * @param modules
+ * @returns
+ */
+function loadModules(modules: any) {
+  let moduleRoutes: Array<RouteRecordRaw> = []
+  for (const path in modules) {
+    const module = modules[path]
+    const defaultExport = module.default as Array<RouteRecordRaw>
+    moduleRoutes = moduleRoutes.concat(defaultExport)
+  }
+  return moduleRoutes
+}
+
+// 外部布局 (/external)
+const cloudeaPlatformModules = import.meta.glob('./modules/cloudeaPlatform/**/*.{js,ts}', { eager: true })
+const cloudeaPlatformLayout = loadModules(cloudeaPlatformModules)
+
+// 动态载入modules
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    name: 'index',
+    component: () => import('@/views/CloudeaPlatformLayout.vue'),
+    children: [...cloudeaPlatformLayout]
+  }
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Test
-    },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue')
-    // },
-    {
-      path: '/tool',
-      component: Tool
-    },
-    { path: '/test', component: Test }
-  ]
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes: routes
 })
 
 export default router

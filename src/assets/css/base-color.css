@@ -1,0 +1,8 @@
+:root {
+  /* 主色调 - 包括导航栏等内容 */
+  --Tool-Main: #333;
+  /*  */
+  --Tool-Back: #ffffff;
+
+  --Tool-Card-Back: #fff;
+}

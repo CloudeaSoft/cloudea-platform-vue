@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'
 // 基础axios对象
 const request = axios.create({
   baseURL: import.meta.env.VITE_SERVER,
-  timeout: 5000
+  timeout: 25000
 })
 
 // request 拦截器
@@ -37,7 +37,7 @@ request.interceptors.response.use(
   // 失败回调
   (error) => {
     let message = ''
-    let status = error.response.status
+    const status = error.response.status
     switch (status) {
       case 401:
         message = "Token过期"
@@ -52,7 +52,7 @@ request.interceptors.response.use(
         message = "服务器出现问题"
         break
       default:
-        message = "网络出现问题"
+        message = "请求失败"
         break
     }
     //提示错误信息

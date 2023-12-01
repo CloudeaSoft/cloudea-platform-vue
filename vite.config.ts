@@ -1,26 +1,30 @@
 import { fileURLToPath, URL } from 'node:url'
 
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    vue(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+export default ({ mode }: { mode: string }) => {
+  return defineConfig({
+    plugins: [vue()],
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, './src'),
+        '~bootstrap': resolve(__dirname, 'node_modules/bootstrap')
+      }
+    },
+    server: {
+      port: 5173,
+      host: '0.0.0.0'
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html')
+          // home:resolve(__dirname,'src/pages/RoutePage/index.html'),
+        }
+      }
     }
-  },
-  server: {
-    port: 5173,
-    proxy: {
-      '/api/hypergryph': {
-        target: "https://ak.hypergryph.com", //跨域地址
-        changeOrigin: true, //支持跨域
-        rewrite: (path) => path.replace(/^\/api\/hypergryph/, "")//重写路径,替换/api
-      },
-    }
-  }
-})
+  })
+}
