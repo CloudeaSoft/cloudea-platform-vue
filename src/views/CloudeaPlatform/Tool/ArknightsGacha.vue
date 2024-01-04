@@ -195,7 +195,7 @@
   import { ElMessage } from 'element-plus'
   import { Search } from '@element-plus/icons-vue'
   import { nextTick } from 'vue'
-  import ToolCard from './ToolCard.vue'
+  import ToolCard from './components/ToolCard.vue'
   export default {
     components: {
       GachaTips,
@@ -266,7 +266,7 @@
       // 请求数据 - 获取寻访记录
       async getGacha() {
         //获取记录
-        var res = await request.get('/api/GameHelper/ArkNights/GetGacha', {
+        var res = await request.get('/api/ArkNights/Gacha', {
           params: {
             token: this.gachaToken,
             channelId: this.gachaChannelId
@@ -274,7 +274,7 @@
         })
         try {
           // 加入记录列表
-          this.tableData = res.list
+          this.tableData = res.Data.list
         } catch (e) {
           // 提示
           ElMessage({

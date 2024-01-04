@@ -2,11 +2,11 @@ import { type RouteRecordRaw } from 'vue-router'
 export default <Array<RouteRecordRaw>>[
   {
     path: '/',
-    name: 'main',
+    name: 'index',
     component: () => import('@/views/CloudeaPlatform/HomePage.vue'),
     children:[
       {
-        path: '/',
+        path: '/test',
         name: 'test',
         component: () => import('@/views/Test/Test.vue'),
         meta: {

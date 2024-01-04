@@ -1,23 +1,23 @@
 <template>
-  <div class="main">
-    <CloudeaHeader></CloudeaHeader>
-    <el-container class="shelf">
-      <el-header class="book-title">
-        {{ `${bookMeta.title} —— ${bookMeta.content[page - 1].name}` }}
-      </el-header>
-      <el-main class="book-body"><iframe :src="book"></iframe></el-main>
-      <el-footer class="book-page-control">
+  <div class="book-wrap">
+    <div class="book-content">
+      <div class="book-title">
+        <span>{{ `${bookMeta.title} —— ${bookMeta.content[page - 1].name}` }}</span>
+      </div>
+      <div class="book-body" ref="bookBody">
+        <iframe :src="book"></iframe>
+      </div>
+      <div class="book-control">
         <el-button @click="changePage(false)">上一章<ArrowLeft /></el-button>
         <el-button @click="changePage(true)"><ArrowRight />下一章</el-button>
-      </el-footer>
-    </el-container>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { getNovel } from '@/utils/getAssetFile'
-  import CloudeaHeader from './components/CloudeaHeader.vue'
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { ElMessage } from 'element-plus'
 
   const bookMeta = {
@@ -101,44 +101,46 @@
 </script>
 
 <style scoped>
-  .main {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(yellow, green, blue, 0.8);
+  .book-wrap {
+    height: 100%;
+    min-height: 600px;
     background-color: #333;
+    padding: 20px;
+    padding-top: var(--header-height);
+    padding-bottom: 70px;
   }
 
-  .shelf {
-    flex-grow: 1;
+  .book-content {
+    position: relative;
     display: flex;
-    justify-content: center;
+    height: 100%;
     align-items: center;
     flex-direction: column;
-
-    /* padding: 20px; */
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 20px;
   }
 
   .book-title {
     display: flex;
-
     height: 50px;
     line-height: 50px;
     text-align: center;
     justify-content: center;
+    margin: 0 20px;
     width: 100%;
-
     font-size: 18px;
     font-weight: 700;
+    background-color: #888;
+  }
 
-    background-color: #fff;
+  .book-title span {
+    color: #fff;
   }
 
   .book-body {
     width: 100%;
-    /* flex-grow: 1; */
-    /* margin-bottom: 20px; */
-    overflow: hidden;
+    height: 100%;
   }
 
   .book-body iframe {
@@ -147,6 +149,8 @@
     height: 100%;
   }
 
-  .book-page-control {
+  .book-control {
+    position: fixed;
+    bottom: 20px;
   }
 </style>

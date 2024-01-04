@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-  import ToolCard from './ToolCard.vue'
+  import ToolCard from './components/ToolCard.vue'
 </script>

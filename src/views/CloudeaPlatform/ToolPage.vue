@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import CloudeaHeader from './components/CloudeaHeader.vue'
 
   const isCollapse = ref(true)
   const changeMenuStatus = () => {
@@ -10,7 +9,6 @@
 
 <template>
   <div class="tool-bg">
-    <CloudeaHeader :is-index="false"></CloudeaHeader>
     <div class="tool-menu">
       <el-menu router default-active="index" class="el-menu-vertical-demo" :collapse="isCollapse">
         <el-menu-item @click="changeMenuStatus">
@@ -27,7 +25,7 @@
             <el-icon><document /></el-icon>
             <span>抽卡分析</span>
           </template>
-          <el-menu-item index="ArknightsGacha">
+          <el-menu-item index="arknightsgacha">
             <el-icon
               ><svg
                 version="1.1"
@@ -240,7 +238,7 @@ MSswMDowMHC3lGgAAAAASUVORK5CYII="
             <el-icon><Stopwatch /></el-icon>
             <span>Osu工具</span>
           </template>
-          <el-menu-item index="OsuSkinIni">
+          <el-menu-item index="osuskinini">
             <el-icon><document /></el-icon>
             <span>skin.ini编辑</span>
           </el-menu-item>
@@ -259,13 +257,8 @@ MSswMDowMHC3lGgAAAAASUVORK5CYII="
   .tool-bg {
     background-color: var(--Tool-Main);
     display: flex;
+    height: 100%;
     flex-direction: column;
-  }
-
-  .tool-header {
-    z-index: var(--z-index-navbar);
-    height: var(--header-height);
-    background-color: var(--Tool-Main);
   }
 
   .tool-menu {
@@ -302,9 +295,9 @@ MSswMDowMHC3lGgAAAAASUVORK5CYII="
 
   .tool-main {
     background-color: var(--Tool-Back);
-    padding-top: var(--header-height);
+    margin-top: var(--header-height);
     padding-left: var(--tool-menu-width);
     z-index: 0;
-    height: var(--doc-height);
+    height: 100%;
   }
 </style>

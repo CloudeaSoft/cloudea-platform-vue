@@ -13,3 +13,8 @@
         url("./d571b52b60b5617399ce8eab62bf3eb3.svg#Engravers' Old English BT") format("svg");
     /* iOS 4.1- */
 }
+
+@font-face {
+    font-family: Archivo;
+    src:url("./Archivo-ExtraBold.361ffd6.ttf")
+}

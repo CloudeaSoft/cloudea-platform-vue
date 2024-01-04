@@ -54,8 +54,6 @@
   outline:solid #f00 1px !important;
 } */
 
-
-
 *,
 *::before,
 *::after {
@@ -64,10 +62,11 @@
   padding: 0;
 }
 
-html,
-body {
-  height: 100%;
-  -webkit-overflow-scrolling: touch;
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  /* font-size: 12px; */
 }
 
 body {
@@ -90,8 +89,14 @@ body {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
-  font-size: 15px;
+  font-size: 12px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
 }

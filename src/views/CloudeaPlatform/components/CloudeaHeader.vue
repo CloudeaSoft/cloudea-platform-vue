@@ -1,20 +1,14 @@
 <script lang="ts" setup>
   import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useUserStore, type UserProfile } from '@/store'
   import { getImageUrl } from '@/utils/getAssetFile'
+  import request from '@/utils/http'
 
-  const props = defineProps({
-    isIndex: {
-      type: Boolean,
-      default: false
-    }
-  })
-
-  const headerType = props.isIndex
-    ? ref('cloduea-header__bar')
-    : ref('cloduea-header__bar header-fix-block')
-
-  const handleSelect = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
+  const router = useRouter()
+  // 绑定路由与menu-active
+  const activeRoute = () => {
+    return router.currentRoute.value.fullPath
   }
 
   // header Dom
@@ -35,58 +29,137 @@
   }
 
   // 登录遮罩相关
-  const loginMaskVisible = ref(false)
+  // 登录状态
+  const userStore = useUserStore() // 登录信息存储库
+  const loginCheck = () => {
+    return userStore.token ? true : false
+  }
+  const loginMaskVisible = ref(false) // 登录遮罩是否可见
   const openLoginMask = () => {
+    // 显示登录遮罩
     loginMaskVisible.value = true
   }
   const closeLoginMask = () => {
+    // 隐藏登录遮罩
     loginMaskVisible.value = false
   }
-  const loginMaskCloseButton = ref(getImageUrl('close.svg'))
+  const loginMaskCloseButton = ref(getImageUrl('close.svg')) // 登录遮罩关闭按钮图标
+
+  // 登录方式
+  // true: 用户名/邮箱 + 密码
+  // false: 邮箱+验证码
   const loginType = ref(true)
 
-  const loginUsername = ref(null)
-  const loginUserPwd = ref(null)
-  const pwdVisible = ref(false)
+  const loginUsername = ref('') // 用户名
+  const loginUserPwd = ref('') // 密码
+  const pwdVisible = ref(false) // 密码是否可见
+
+  // 登录数据校验
   const checkLoginValue = () => {
-    return loginUsername.value && loginUserPwd.value
+    if (!loginUsername.value || !loginUserPwd.value) {
+      return false
+    }
+    if (loginUserPwd.value.length == 0 || loginUserPwd.value.length == 0) {
+      return false
+    }
+    return true
   }
 
   const loginEmail = ref()
   const loginEmailVerCode = ref()
 
-  const handleRegister = () => {
-    console.log(loginUsername.value, loginUserPwd.value)
-    console.log(checkLoginValue())
+  interface Result<T> {
+    Status: boolean
+    Data: T
+    Message: object
   }
-  const handleLoginByPwd = () => {}
 
-  onMounted(() => {
-    if (props.isIndex) {
-      window.addEventListener('scroll', windowScroll)
+  // 注册请求
+  const handleRegister = async () => {
+    await request.get('/api/Test/Send')
+    //跳转到注册页
+    console.log(userStore.token)
+  }
+
+  // 登录请求 账号+密码
+  const handleLoginByPwd = async () => {
+    // 检查数据
+    console.log(checkLoginValue())
+
+    // 发送请求
+    let tokenRes: Result<string> = await request.post('/api/Identity/Login', {
+      UserName: loginUsername.value,
+      Password: loginUserPwd.value,
+      LoginType: 0
+    })
+    if (tokenRes == null) {
+      return
+    }
+    // 结果检验 并存储
+    if (tokenRes.Status) {
+      var token: string = tokenRes.Data
+      userStore.setToken(token)
+    } else {
+      console.log('登录失败，用户名或密码错误')
+      return
+    }
+
+    // 使用token拉取用户信息
+    var userRes: UserProfile | null = await request.get('/api/Identity/SelfInfo')
+    if (userRes != null) {
+      userStore.setUserProfile(userRes)
+    }
+
+    // 关闭登录窗口并设置登陆状态
+    loginMaskVisible.value = false
+    loginUsername.value = ''
+    loginUserPwd.value = ''
+  }
+
+  // 退出登录
+  const handleLogout = async () => {
+    userStore.removeToken()
+    userStore.removeUserProfile()
+    router.push({
+      path: '/'
+    })
+  }
+
+  onMounted(async () => {
+    // 固定顶部
+    window.addEventListener('scroll', windowScroll)
+
+    // 用户登录初始化
+    if (userStore.token != null && userStore.token != '') {
+      var res: UserProfile | null = await request.get('/api/Identity/SelfInfo')
+      if (res != null) {
+        console.log(res)
+        userStore.setUserProfile(res)
+      }
     }
   })
   onBeforeUnmount(() => {
-    if (props.isIndex) {
-      window.removeEventListener('scroll', windowScroll)
-    }
+    window.removeEventListener('scroll', windowScroll)
   })
 </script>
 
 <template>
-  <div class="cloudea-header" ref="mainwidth">
-    <div :class="headerType" ref="headerBar">
+  <div class="header-wrap" ref="mainwidth">
+    <div class="cloduea-header__bar" ref="headerBar">
       <el-menu
         class="cloudea-menu"
         router
         mode="horizontal"
         :ellipsis="false"
         :collapse="false"
-        background-color="#545c64"
         text-color="#fff"
-        popper-effect="dark"
-        active-text-color="#ffd04b"
-        @select="handleSelect"
+        :default-active="activeRoute()"
+        style="
+          --el-menu-hover-bg-color: rgba($color: #000000, $alpha: 0);
+          --el-menu-active-color: #ffd04b;
+          --el-menu-text-color: #fff;
+          /* --el-menu-bg-color: pink; */
+        "
       >
         <el-menu-item index="/">
           <div class="title">
@@ -94,23 +167,31 @@
             <span>首页</span>
           </div>
         </el-menu-item>
-        <el-menu-item index="/Forum/">论坛</el-menu-item>
-        <el-menu-item index="/Tool/">工具箱</el-menu-item>
-        <el-sub-menu>
-          <template #title>其他</template>
-          <el-menu-item index="/BookShelf/">书架</el-menu-item>
-        </el-sub-menu>
+        <el-menu-item index="/forum/">论坛</el-menu-item>
+        <el-menu-item index="/tool/">工具箱</el-menu-item>
+        <el-menu-item index="/book/">书架</el-menu-item>
         <div class="flex-grow"></div>
-        <el-sub-menu class="menu-avatar" index="user">
+        <!-- 已登录 -->
+        <el-menu-item class="menu-avatar" v-if="loginCheck()">
           <template #title>
-            <el-avatar :size="40" :src="getImageUrl('avatar.png')" />
+            <el-dropdown size="large">
+              <el-avatar
+                :size="40"
+                :src="getImageUrl('avatar.png')"
+                @click="router.push('/user/home')"
+              />
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="router.push('/user/home')">个人中心</el-dropdown-item>
+                  <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
-          <el-menu-item index="user">个人中心</el-menu-item>
-          <el-menu-item index="user">退出登录</el-menu-item>
-        </el-sub-menu>
-        <el-menu-item @click="openLoginMask">
+        </el-menu-item>
+        <!-- 未登录 -->
+        <el-menu-item v-else @click="openLoginMask">
           <el-avatar :size="40" :src="getImageUrl('avatar.png')" />
-          未登录
         </el-menu-item>
       </el-menu>
     </div>
@@ -138,7 +219,7 @@
             </div>
           </div>
           <!-- 密码登录 -->
-          <div class="login-pwd-wp" v-if="loginType">
+          <div class="login-pwd-wp" v-show="loginType">
             <form class="tab__form">
               <div class="form__item">
                 <div class="form_info">账号</div>
@@ -220,7 +301,7 @@
                 </div>
               </div>
             </form>
-            <div class="dialog__mask" style="display: none">
+            <!-- <div class="dialog__mask" style="display: none">
               <div class="dialog__outline">
                 <div class="dialog__body">
                   <div class="body__title">二次校验</div>
@@ -235,14 +316,19 @@
                   <div class="footer__submit_disabled">确定</div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="btn_wp">
               <div class="btn_other" @click="handleRegister">注册</div>
-              <div class="btn_primary disabled" @click="handleLoginByPwd">登录</div>
+              <div
+                :class="`btn_primary ${checkLoginValue() ? null : 'disabled'}`"
+                @click="handleLoginByPwd"
+              >
+                登录
+              </div>
             </div>
           </div>
           <!-- 邮箱登录 -->
-          <div class="login-sms-wp" v-else>
+          <div class="login-sms-wp" v-show="!loginType">
             <form class="tab__form">
               <div class="form__item">
                 <div class="login-sms-wp__cid">邮箱</div>
@@ -319,7 +405,7 @@
 <style lang="scss" scoped>
   @import url('@/assets/css/base-position.css');
 
-  .cloudea-header {
+  .header-wrap {
     position: relative;
     margin: 0 auto;
     max-width: 2560px;
@@ -338,7 +424,7 @@
   }
 
   .header-fix {
-    background-color: rgba($color: #000000, $alpha: 0.5) !important;
+    background-color: rgba(17, 17, 17, 0.75) !important;
     background-image: radial-gradient(transparent 1px, #ffffff 1px);
     background-size: 2px 2px;
     backdrop-filter: saturate(50%) blur(1px);

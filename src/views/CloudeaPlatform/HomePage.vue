@@ -1,12 +1,10 @@
 <script setup lang="ts">
-  import CloudeaHeader from './components/CloudeaHeader.vue'
   import CloudeaFooter from './components/CloudeaFooter.vue'
 </script>
 
 <template>
-  <div class="index-body">
-    <CloudeaHeader is-index></CloudeaHeader>
-    <div class="index-main">
+  <div class="content-wrap">
+    <div class="content-body">
       <div class="mv-bg mv-anime"></div>
       <div id="sakura"></div>
       <div class="bg-mask">
@@ -22,18 +20,14 @@
   @import url('@/assets/css/sakura.css');
   @import url('@/assets/css/anime-bg.css');
 
-  .index-body {
-    position: relative;
+  .content-wrap {
     margin: 0 auto;
     height: 100%;
-
-    max-width: 2560px;
     width: 100%;
   }
 
-  .index-main {
-    position: relative;
-    height: 100vh;
+  .content-body {
+    height: 100%;
     z-index: 0;
     width: 100%;
   }
@@ -51,8 +45,6 @@
     background-color: rgba(255, 255, 255, 0.8);
 
     transition: all 0.3s;
-
-    overflow: auto;
   }
 
   @media screen and (min-width: 0px) {

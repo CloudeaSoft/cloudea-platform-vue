@@ -22,7 +22,9 @@ function loadModules(modules: any) {
 }
 
 // 外部布局 (/external)
-const cloudeaPlatformModules = import.meta.glob('./modules/cloudeaPlatform/**/*.{js,ts}', { eager: true })
+const cloudeaPlatformModules = import.meta.glob('./modules/cloudeaPlatform/**/*.{js,ts}', {
+  eager: true
+})
 const cloudeaPlatformLayout = loadModules(cloudeaPlatformModules)
 
 // 动态载入modules
@@ -39,5 +41,20 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: routes
 })
+
+import http from '@/utils/http'
+
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/') {
+//     next()
+//   } else {
+//     const token = localStorage.getItem('Authorization') || null
+//     if (token === null || token === '') {
+//       next('/')
+//     } else {
+//       next()
+//     }
+//   }
+// })
 
 export default router

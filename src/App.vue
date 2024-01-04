@@ -13,19 +13,19 @@
         loading.value = false
       }, 1000)
     },
-    { once:true }
+    { once: true }
   )
 </script>
 
 <template>
   <Transition :name="'loading'">
     <div id="loader-bg" v-show="loading">
-      <p id="loading" class="font01">
+      <!-- <p id="loading" class="font01">
         <span class="spac"
           >その歌声は<span style="display: inline-block; margin-right: -0.3em">、</span
           >春風と共に</span
         >──
-      </p>
+      </p> -->
       <div class="loading-bg">
         <img class="sakura-1" :src="getImageUrl('loading-bg.gif')" alt="" width="240" />
       </div>

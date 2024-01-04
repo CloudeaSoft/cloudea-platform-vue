@@ -1,30 +1,41 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import router from '@/router'
+import { useUserStore } from '@/store'
+
+const baseURL = import.meta.env.VITE_SERVER
 
 // 基础axios对象
-const request = axios.create({
-  baseURL: import.meta.env.VITE_SERVER,
-  timeout: 25000
+const http = axios.create({
+  baseURL: baseURL,
+  timeout: 10000
 })
 
 // request 拦截器
 // 可以自请求发送前对请求做一些处理
 // 比如统一加token，对请求参数统一加密
-request.interceptors.request.use(
+http.interceptors.request.use(
+  // 发送请求前
   (config) => {
+    const userStore = useUserStore()
+    if (userStore.token) {
+      config.headers.Authorization = `bearer ${userStore.token}`
+    }
+
     config.headers['Content-Type'] = 'application/json;charset=utf-8'
     //设置请求头
-    // config.headers['token'] = use.token;
+
     return config
   },
+  // 请求错误时
   (error) => {
     return Promise.reject(error)
   }
 )
-// response拦截器
+// response 拦截器
 //可以在接口响应后统一处理结果
-request.interceptors.response.use(
-  //成功回调
+http.interceptors.response.use(
+  // 成功回调 - 2xx范围内的状态码
   (response) => {
     //    response.data即为后端返回的Result
     let res = response.data
@@ -34,31 +45,39 @@ request.interceptors.response.use(
     }
     return res
   },
-  // 失败回调
+  // 失败回调 - 2xx范围外的状态码
   (error) => {
     let message = ''
     const status = error.response.status
     switch (status) {
       case 401:
-        message = "Token过期"
+        message = '未登录'
+        localStorage.removeItem('Authorization')
+        localStorage.removeItem('user')
+        router.push({
+          path: '',
+          query: {
+            date: new Date().getTime()
+          }
+        })
         break
       case 403:
-        message = "无权访问"
+        message = '无权访问'
         break
       case 404:
-        message = "请求地址错误"
+        message = '请求地址错误'
         break
       case 500:
-        message = "服务器出现问题"
+        message = '服务器出现问题'
         break
       default:
-        message = "请求失败"
+        message = '请求失败'
         break
     }
     //提示错误信息
     ElMessage({
-        type: 'error',
-        message
+      type: 'error',
+      message
     })
     console.log('err:' + error)
     return Promise.reject(error)
@@ -66,4 +85,4 @@ request.interceptors.response.use(
 )
 
 // export
-export default request
+export default http

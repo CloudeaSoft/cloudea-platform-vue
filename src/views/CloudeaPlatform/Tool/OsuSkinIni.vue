@@ -102,7 +102,7 @@
   import ini from '@/utils/osuTool'
   import type { FormProps } from 'element-plus'
   import { ref, watch } from 'vue'
-  import ToolCard from './ToolCard.vue'
+  import ToolCard from './components/ToolCard.vue'
 
   // 已接收文件
   const fileExist = (val: Object) => {

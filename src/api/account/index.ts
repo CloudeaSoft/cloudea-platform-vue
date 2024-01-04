@@ -1,4 +1,4 @@
-import request from '@/utils/http'
+import http from '@/utils/http'
 import type { loginForm, loginResponse } from './type'
 
 enum API {
@@ -6,6 +6,6 @@ enum API {
   USERINFO_URL = '/account/info'
 }
 
-export const reqLogin = (data: loginForm) => request.post<any, loginResponse>(API.LOGIN_URL, data)
+export const reqLogin = (data: loginForm) => http.post<any, loginResponse>(API.LOGIN_URL, data)
 
-export const reqUserInfo = () => request.get(API.USERINFO_URL)
+export const reqUserInfo = () => http.get(API.USERINFO_URL)

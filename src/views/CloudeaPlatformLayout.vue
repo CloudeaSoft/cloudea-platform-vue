@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import CloudeaHeader from './CloudeaPlatform/components/CloudeaHeader.vue'
   import { ref } from 'vue'
   // import CloudeaCursor from './CloudeaPlatform/components/CloudeaCursor.vue';
   const windowHeight = ref()
@@ -14,16 +15,18 @@
 </script>
 
 <template>
-  <div class="cloudea-main" :height="windowHeight">
+  <div id="frame" :style="`height:${windowHeight}px`">
+    <CloudeaHeader></CloudeaHeader>
     <router-view></router-view>
     <!-- <CloudeaCursor></CloudeaCursor> -->
   </div>
 </template>
 
 <style scoped>
-  .cloudea-main {
+  #cloudea-main {
+    position: relative;
     height: 100vh;
     height: var(--doc-height);
-    overflow: overlay;
+    background-position-y: 0px;
   }
 </style>
