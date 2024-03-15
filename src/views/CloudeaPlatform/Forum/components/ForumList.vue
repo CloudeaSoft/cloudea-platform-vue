@@ -13,8 +13,8 @@
     <div class="timeline-list-header">
       <div class="list-nav">
         <ul class="nav-list">
-          <li class="nav-item"><a href="">推荐</a></li>
-          <li class="nav-item"><a href="">最新</a></li>
+          <li class="nav-item active"><router-link to="recommend">推荐</router-link></li>
+          <li class="nav-item"><router-link to="recommend">最新</router-link></li>
         </ul>
         <div class="drop-down-area"></div>
       </div>
@@ -55,6 +55,11 @@
     position: relative;
     cursor: pointer;
   }
+
+  .nav-list.left .nav-item.active a {
+    color: var(--juejin-font-1);
+    font-weight: 500;
+}
 
   .timeline-list-header .nav-list {
     align-items: center;

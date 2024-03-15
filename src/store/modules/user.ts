@@ -1,5 +1,14 @@
+import type { RoleEnum } from '@/enums/roleEnum'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+
+interface UserState {
+  userInfo: UserProfile | null
+  token?: string
+  roleList: RoleEnum[]
+  sessionTimeout?: boolean
+  lastUpdateTime: number
+}
 
 export interface UserProfile {
   Id: string
@@ -18,6 +27,8 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('Authorization')
   }
 
+  const logout = () => {}
+
   const profile = ref<UserProfile | null>()
   const setUserProfile = (newUser: UserProfile) => {
     profile.value = newUser
@@ -33,6 +44,7 @@ export const useUserStore = defineStore('user', () => {
     token,
     setToken,
     removeToken,
+    logout,
     profile,
     setUserProfile,
     removeUserProfile,

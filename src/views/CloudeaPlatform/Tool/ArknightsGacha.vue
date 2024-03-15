@@ -1,196 +1,6 @@
-<template>
-  <ToolCard>
-    <template #header>
-      <div>明日方舟寻访记录查询</div>
-    </template>
-    <template #footer>
-      <div>xxx</div>
-    </template>
-    <div v-loading="loadingCheck">
-      <el-form class="gacha-header">
-        <el-input
-          type="textarea"
-          rows="6"
-          class="gacha-input"
-          v-model="gachaTokenFull"
-          placeholder="请在此输入"
-        ></el-input>
-        <el-form-item class="area-button" :inline="true">
-          <el-button @click="showGacha" :type="buttonTypeGetGacha">获取寻访记录</el-button>
-          <el-button
-            @click="getEchart"
-            :type="buttonTypeAnalyzeGacha"
-            :disabled="analyzedDataCheckForBtn"
-            >生成分析图表</el-button
-          >
-          <div class="area-button-right">
-            <el-tooltip effect="dark" placement="left">
-              <template #content>
-                <GachaTips></GachaTips>
-              </template>
-              <el-button circle>
-                <el-icon>
-                  <Search />
-                </el-icon>
-              </el-button>
-            </el-tooltip>
-            <el-radio-group v-model="gachaChannelId" size="default">
-              <el-radio-button
-                v-for="server in gachaChannelIdList"
-                :key="server.channelId"
-                :label="server.channelId"
-              >
-                {{ server.name }}
-              </el-radio-button>
-            </el-radio-group>
-          </div>
-        </el-form-item>
-      </el-form>
-      <div class="gacha-body">
-        <div class="gacha-analyze">
-          <el-row :gutter="10">
-            <el-col>
-              <div class="gacha-table">
-                <el-table border stripe :data="tableData" :header-cell-style="tableHeaderCellStyle">
-                  <el-table-column
-                    label="时间戳"
-                    :resizable="false"
-                    min-width="120px"
-                    show-overflow-tooltip
-                    align="center"
-                  >
-                    <template #default="scope">
-                      {{ dateFormat(scope.row.ts) }}
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="卡池"
-                    :resizable="false"
-                    prop="pool"
-                    min-width="250px"
-                    show-overflow-tooltip
-                    align="center"
-                  ></el-table-column>
-                  <el-table-column label="角色" :resizable="false" min-width="150px" align="center">
-                    <template #default="scope">
-                      <ul>
-                        <li v-for="(a, index) in scope.row.chars" :key="index">
-                          <span style="color: #a231ff" v-if="a.rarity == 3">{{ a.name }}</span>
-                          <span style="color: #cc7a00" v-else-if="a.rarity == 4">{{ a.name }}</span>
-                          <span style="color: #ee5700" v-else-if="a.rarity == 5">{{ a.name }}</span>
-                          <span style="color: #333333" v-else>{{ a.name }}</span>
-                          <span class="gacha-table-isnew" v-if="a.isNew">N</span>
-                        </li>
-                      </ul>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
-    </div>
-    <el-dialog
-      v-model="echartDialogVisible"
-      width="1080px"
-      center
-      :close-on-click-modal="false"
-      :show-close="false"
-    >
-      <template #header>
-        <div>
-          <div class="gacha-analyze-header">
-            <h2>抽卡分析</h2>
-          </div>
-        </div>
-      </template>
-      <div class="gacha-analyze">
-        <el-row :gutter="10">
-          <el-col :span="8" v-for="(a, index) in analyzedData" :key="index">
-            <div class="echart">
-              <div class="echart-main" :style="{ width: '328px', height: '330px' }"></div>
-              <div class="echart-text">
-                <div>
-                  {{ '合计 ' + a.total + ' 抽 已累计 ' + a.notSixStarCounter + ' 抽未出6星' }}
-                </div>
-                <div>
-                  {{
-                    '6星: ' +
-                    a.stars[0].value +
-                    ' [' +
-                    Math.trunc((a.stars[0].value / a.total) * 100) +
-                    '%]'
-                  }}
-                </div>
-                <div>
-                  {{
-                    '5星: ' +
-                    a.stars[1].value +
-                    ' [' +
-                    Math.trunc((a.stars[1].value / a.total) * 100) +
-                    '%]'
-                  }}
-                </div>
-                <div>
-                  {{
-                    '4星: ' +
-                    a.stars[2].value +
-                    ' [' +
-                    Math.trunc((a.stars[2].value / a.total) * 100) +
-                    '%]'
-                  }}
-                </div>
-                <div>
-                  {{
-                    '3星: ' +
-                    a.stars[3].value +
-                    ' [' +
-                    Math.trunc((a.stars[3].value / a.total) * 100) +
-                    '%]'
-                  }}
-                </div>
-                <div>
-                  <span>{{ '六星平均抽卡次数为: ' }}</span>
-                  <span v-if="a.sixStarList.length == 0">无</span>
-                  <span v-else>{{ a.sixAvg }}</span>
-                </div>
-                <div>
-                  <ul>
-                    <li style="display: inline-block">六星历史记录:</li>
-                    <li
-                      v-if="a.sixStarList.length == 0"
-                      style="display: inline-block; padding-left: 5px"
-                    >
-                      无
-                    </li>
-                    <li
-                      v-else
-                      v-for="(b, index) in a.sixStarList"
-                      :key="index"
-                      style="display: inline-block; padding-left: 5px"
-                    >
-                      {{ b.name + '[' + b.count + ']' }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-      <template #footer>
-        <span class="gacha-analyze-footer">
-          <el-button type="primary" @click="echartDialogVisible = false"> 关闭 </el-button>
-        </span>
-      </template>
-    </el-dialog>
-  </ToolCard>
-</template>
-
 <script>
   import GachaTips from './ArknightsGachaTips.vue'
-  import request from '@/utils/http.ts'
+  import request from '@/utils/http'
   import * as echarts from 'echarts'
   import { ElMessage } from 'element-plus'
   import { Search } from '@element-plus/icons-vue'
@@ -511,6 +321,196 @@
   }
 </script>
 
+<template>
+  <ToolCard>
+    <template #header>
+      <div>明日方舟寻访记录查询</div>
+    </template>
+    <template #footer>
+      <div>xxx</div>
+    </template>
+    <div v-loading="loadingCheck">
+      <el-form class="gacha-header">
+        <el-input
+          type="textarea"
+          rows="6"
+          class="gacha-input"
+          v-model="gachaTokenFull"
+          placeholder="请在此输入"
+        ></el-input>
+        <el-form-item class="area-button" :inline="true">
+          <el-button @click="showGacha" :type="buttonTypeGetGacha">获取寻访记录</el-button>
+          <el-button
+            @click="getEchart"
+            :type="buttonTypeAnalyzeGacha"
+            :disabled="analyzedDataCheckForBtn"
+            >生成分析图表</el-button
+          >
+          <div class="area-button-right">
+            <el-tooltip effect="dark" placement="left">
+              <template #content>
+                <GachaTips></GachaTips>
+              </template>
+              <el-button circle>
+                <el-icon>
+                  <Search />
+                </el-icon>
+              </el-button>
+            </el-tooltip>
+            <el-radio-group v-model="gachaChannelId" size="default">
+              <el-radio-button
+                v-for="server in gachaChannelIdList"
+                :key="server.channelId"
+                :label="server.channelId"
+              >
+                {{ server.name }}
+              </el-radio-button>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+      </el-form>
+      <div class="gacha-body">
+        <div class="gacha-analyze">
+          <el-row :gutter="10">
+            <el-col>
+              <div class="gacha-table">
+                <el-table border stripe :data="tableData" :header-cell-style="tableHeaderCellStyle">
+                  <el-table-column
+                    label="时间戳"
+                    :resizable="false"
+                    min-width="120px"
+                    show-overflow-tooltip
+                    align="center"
+                  >
+                    <template #default="scope">
+                      {{ dateFormat(scope.row.ts) }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="卡池"
+                    :resizable="false"
+                    prop="pool"
+                    min-width="250px"
+                    show-overflow-tooltip
+                    align="center"
+                  ></el-table-column>
+                  <el-table-column label="角色" :resizable="false" min-width="150px" align="center">
+                    <template #default="scope">
+                      <ul>
+                        <li v-for="(a, index) in scope.row.chars" :key="index">
+                          <span style="color: #a231ff" v-if="a.rarity == 3">{{ a.name }}</span>
+                          <span style="color: #cc7a00" v-else-if="a.rarity == 4">{{ a.name }}</span>
+                          <span style="color: #ee5700" v-else-if="a.rarity == 5">{{ a.name }}</span>
+                          <span style="color: #333333" v-else>{{ a.name }}</span>
+                          <span class="gacha-table-isnew" v-if="a.isNew">N</span>
+                        </li>
+                      </ul>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+    </div>
+    <el-dialog
+      v-model="echartDialogVisible"
+      width="1080px"
+      center
+      :close-on-click-modal="false"
+      :show-close="false"
+    >
+      <template #header>
+        <div>
+          <div class="gacha-analyze-header">
+            <h2>抽卡分析</h2>
+          </div>
+        </div>
+      </template>
+      <div class="gacha-analyze">
+        <el-row :gutter="10">
+          <el-col :span="8" v-for="(a, index) in analyzedData" :key="index">
+            <div class="echart">
+              <div class="echart-main" :style="{ width: '328px', height: '330px' }"></div>
+              <div class="echart-text">
+                <div>
+                  {{ '合计 ' + a.total + ' 抽 已累计 ' + a.notSixStarCounter + ' 抽未出6星' }}
+                </div>
+                <div>
+                  {{
+                    '6星: ' +
+                    a.stars[0].value +
+                    ' [' +
+                    Math.trunc((a.stars[0].value / a.total) * 100) +
+                    '%]'
+                  }}
+                </div>
+                <div>
+                  {{
+                    '5星: ' +
+                    a.stars[1].value +
+                    ' [' +
+                    Math.trunc((a.stars[1].value / a.total) * 100) +
+                    '%]'
+                  }}
+                </div>
+                <div>
+                  {{
+                    '4星: ' +
+                    a.stars[2].value +
+                    ' [' +
+                    Math.trunc((a.stars[2].value / a.total) * 100) +
+                    '%]'
+                  }}
+                </div>
+                <div>
+                  {{
+                    '3星: ' +
+                    a.stars[3].value +
+                    ' [' +
+                    Math.trunc((a.stars[3].value / a.total) * 100) +
+                    '%]'
+                  }}
+                </div>
+                <div>
+                  <span>{{ '六星平均抽卡次数为: ' }}</span>
+                  <span v-if="a.sixStarList.length == 0">无</span>
+                  <span v-else>{{ a.sixAvg }}</span>
+                </div>
+                <div>
+                  <ul>
+                    <li style="display: inline-block">六星历史记录:</li>
+                    <li
+                      v-if="a.sixStarList.length == 0"
+                      style="display: inline-block; padding-left: 5px"
+                    >
+                      无
+                    </li>
+                    <li
+                      v-else
+                      v-for="(b, index) in a.sixStarList"
+                      :key="index"
+                      style="display: inline-block; padding-left: 5px"
+                    >
+                      {{ b.name + '[' + b.count + ']' }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <template #footer>
+        <span class="gacha-analyze-footer">
+          <el-button type="primary" @click="echartDialogVisible = false"> 关闭 </el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </ToolCard>
+</template>
+
 <style scoped>
   ul {
     padding: 0;
@@ -597,3 +597,4 @@
     color: transparent;
   }
 </style>
+@/utils/http/http

@@ -20,7 +20,7 @@ import Test14 from './components/VueCourse/Test14.vue'
 import Test15 from './components/VueCourse/Test15.vue'
  
 //个人测试
-import ArknightsGacha from './components/MyTest/ArknightsGacha.vue'
+// import ArknightsGacha from './components/MyTest/ArknightsGacha.vue'
 import None from './components/MyTest/None.vue'
 
 </script>
@@ -54,7 +54,6 @@ import None from './components/MyTest/None.vue'
             <template #header>MyTest</template>
             <div>
                 <None></None>
-                <ArknightsGacha></ArknightsGacha>
             </div>
         </TestCard>
         <BlankTest></BlankTest>

@@ -15,9 +15,9 @@
   }
 
   onMounted(() => {
-    query.value.Id = userStore.profile!.Id
-    userName.value = userStore.profile!.UserName
-    query.value.NickName = userStore.profile!.NickName
+    query.value.Id = userStore.profile?.Id
+    userName.value = userStore.profile?.UserName
+    query.value.NickName = userStore.profile?.NickName
   })
 </script>
 
@@ -30,7 +30,9 @@
           <el-form-item class="user-nick-name" label="昵称">
             <el-input v-model="query.NickName" placeholder="输入昵称"></el-input>
           </el-form-item>
-          <el-form-item class="user-rel-name" label="用户名"><span>{{ userName }}</span></el-form-item>
+          <el-form-item class="user-rel-name" label="用户名"
+            ><span>{{ userName }}</span></el-form-item
+          >
           <el-form-item class="user-my-sign" label="签名"
             ><el-input
               type="textarea"

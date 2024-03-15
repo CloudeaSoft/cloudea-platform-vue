@@ -1,12 +1,12 @@
-import './assets/main.css'
-import './assets/css/base-color.css'
-import './assets/css/base-position.css'
-import './assets/css/styles.scss'
+import './design/main.css'
+import './design/base-color.css'
+import './design/base-position.css'
+import './design/styles.scss'
 import './assets/fonts/fonts.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import { setupRouter } from './router'
 import axios from 'axios'
 import pinia from './store'
 import moment from 'moment'
@@ -19,7 +19,7 @@ import mitt from 'mitt'
 const app = createApp(App)
 
 app.use(pinia)
-app.use(router)
+setupRouter(app)
 app.use(ElementPlus)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$moment = moment

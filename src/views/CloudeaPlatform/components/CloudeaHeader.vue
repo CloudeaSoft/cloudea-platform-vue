@@ -74,11 +74,9 @@
     Message: object
   }
 
-  // 注册请求
+  // 跳转到注册面板
   const handleRegister = async () => {
-    await request.get('/api/Test/Send')
-    //跳转到注册页
-    console.log(userStore.token)
+    loginType.value = false
   }
 
   // 登录请求 账号+密码
@@ -161,15 +159,15 @@
           /* --el-menu-bg-color: pink; */
         "
       >
-        <el-menu-item index="/">
+        <el-menu-item index="/platform/home">
           <div class="title">
             <el-icon size="18px"><Bowl /></el-icon>
             <span>首页</span>
           </div>
         </el-menu-item>
-        <el-menu-item index="/forum/">论坛</el-menu-item>
-        <el-menu-item index="/tool/">工具箱</el-menu-item>
-        <el-menu-item index="/book/">书架</el-menu-item>
+        <el-menu-item index="/platform/forum/home">论坛</el-menu-item>
+        <el-menu-item index="/platform/tool/home">工具箱</el-menu-item>
+        <el-menu-item index="/platform/book">书架</el-menu-item>
         <div class="flex-grow"></div>
         <!-- 已登录 -->
         <el-menu-item class="menu-avatar" v-if="loginCheck()">
@@ -182,7 +180,7 @@
               />
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="router.push('/user/home')">个人中心</el-dropdown-item>
+                  <el-dropdown-item @click="router.push('/platform/user/home')">个人中心</el-dropdown-item>
                   <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -403,8 +401,6 @@
 </template>
 
 <style lang="scss" scoped>
-  @import url('@/assets/css/base-position.css');
-
   .header-wrap {
     position: relative;
     margin: 0 auto;
@@ -889,3 +885,4 @@
     cursor: pointer;
   }
 </style>
+@/utils/http/http

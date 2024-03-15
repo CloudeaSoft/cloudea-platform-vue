@@ -17,8 +17,8 @@
 </template>
 
 <style scoped>
-  @import url('@/assets/css/sakura.css');
-  @import url('@/assets/css/anime-bg.css');
+  @import url('@/design/sakura.css');
+  @import url('@/design/anime-bg.css');
 
   .content-wrap {
     margin: 0 auto;
